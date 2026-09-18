@@ -3,11 +3,176 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>120 Day Journey</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f5f5f5;
+      padding: 50px 20px;
+    }
+
+    h1 {
+      font-size: 36px;
+    }
+
+    #day {
+      font-size: 28px;
+      font-weight: bold;
+      margin-top: 30px;
+    }
+
+    #percentage {
+      font-size: 22px;
+      margin-top: 15px;
+    }
+
+    .progress-container {
+      width: 80%;
+      max-width: 700px;
+      height: 30px;
+      background-color: #ddd;
+      border-radius: 20px;
+      margin: 30px auto;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background-color: green;
+      transition: width 1s ease;
+    }
+
+    #remaining {
+      font-size: 18px;
+    }
+  </style>
 </head>
 
 <body>
+
   <h1>120 Day Journey</h1>
-  <p>Our countdown will go here.</p>
+
+  <div id="day"></div>
+
+  <div id="percentage"></div>
+
+  <div class="progress-container">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+
+  <div id="remaining"></div>
+
+
+  <script>
+
+    // -------------------------
+    // SETTINGS
+    // -------------------------
+
+    const TOTAL_DAYS = 120;
+
+    // September 12, 2026
+    const START_YEAR = 2026;
+    const START_MONTH = 8; 
+    // JavaScript months start at 0:
+    // January = 0
+    // September = 8
+
+    const START_DAY = 12;
+
+
+    // -------------------------
+    // GET TODAY'S DATE
+    // -------------------------
+
+    const today = new Date();
+
+
+    // Convert both dates to UTC day values.
+    // This prevents daylight-saving-time changes
+    // from messing up the calculation.
+
+    const startUTC = Date.UTC(
+      START_YEAR,
+      START_MONTH,
+      START_DAY
+    );
+
+    const todayUTC = Date.UTC(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate()
+    );
+
+
+    // -------------------------
+    // CALCULATE DAYS
+    // -------------------------
+
+    const millisecondsPerDay =
+      1000 * 60 * 60 * 24;
+
+
+    let daysElapsed = Math.floor(
+      (todayUTC - startUTC) /
+      millisecondsPerDay
+    );
+
+
+    // If website is opened before Sept 12
+    if (daysElapsed < 0) {
+      daysElapsed = 0;
+    }
+
+
+    // Don't go past 120
+    if (daysElapsed > TOTAL_DAYS) {
+      daysElapsed = TOTAL_DAYS;
+    }
+
+
+    // Sept 12 = Day 1
+    const currentDay =
+      Math.min(daysElapsed + 1, TOTAL_DAYS);
+
+
+    const percentage =
+      (daysElapsed / TOTAL_DAYS) * 100;
+
+
+    const daysRemaining =
+      TOTAL_DAYS - daysElapsed;
+
+
+    // -------------------------
+    // DISPLAY RESULTS
+    // -------------------------
+
+    document.getElementById("day").textContent =
+      "Day " +
+      currentDay +
+      " of " +
+      TOTAL_DAYS;
+
+
+    document.getElementById("percentage").textContent =
+      percentage.toFixed(1) +
+      "% Complete";
+
+
+    document.getElementById("remaining").textContent =
+      daysRemaining +
+      " Days Remaining";
+
+
+    document.getElementById("progressBar").style.width =
+      percentage + "%";
+
+  </script>
+
 </body>
 </html>
