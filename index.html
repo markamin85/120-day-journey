@@ -35,23 +35,79 @@
       margin-top: 15px;
     }
 
-    .progress-container {
-      width: 80%;
-      max-width: 700px;
-      height: 30px;
-      background-color: #ddd;
-      border-radius: 20px;
-      margin: 30px auto;
-      overflow: hidden;
-    }
+    .road-container {
+  width: 90%;
+  max-width: 800px;
+  margin: 50px auto;
+}
 
-    .progress-bar {
-      height: 100%;
-      width: 0%;
-      background-color: green;
-      transition: width 1s ease;
-    }
+.road {
+  position: relative;
+  height: 50px;
+  background-color: #444;
+  border-radius: 10px;
+  overflow: visible;
+}
 
+/* White dashed center line */
+.road::after {
+  content: "";
+  position: absolute;
+  top: 23px;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  z-index: 2;
+
+  background: repeating-linear-gradient(
+    to right,
+    white 0px,
+    white 30px,
+    transparent 30px,
+    transparent 55px
+  );
+}
+
+/* Completed portion of road */
+.road-progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+
+  height: 100%;
+  width: 0%;
+
+  background-color: #4caf50;
+  border-radius: 10px 0 0 10px;
+
+  transition: width 1s ease;
+}
+
+/* Person moving along road */
+.walker {
+  position: absolute;
+
+  top: -42px;
+  left: 0%;
+
+  font-size: 36px;
+
+  transform: translateX(-50%);
+
+  transition: left 1s ease;
+  z-index: 3;
+}
+
+.road-labels {
+  display: flex;
+  justify-content: space-between;
+
+  margin-top: 12px;
+
+  font-size: 14px;
+  font-weight: bold;
+}
     #remaining {
       font-size: 18px;
     }
@@ -71,9 +127,22 @@
 
   <div id="percentage"></div>
 
-  <div class="progress-container">
-    <div class="progress-bar" id="progressBar"></div>
+  <div class="road-container">
+
+  <div class="road">
+    <div class="road-progress" id="roadProgress"></div>
+
+    <div class="walker" id="walker">
+      🚶
+    </div>
   </div>
+
+  <div class="road-labels">
+    <span>START</span>
+    <span>FINISH 🏁</span>
+  </div>
+
+</div>
 
   <div id="remaining"></div>
 
@@ -230,9 +299,11 @@
       daysRemaining +
       " Days Remaining";
 
+document.getElementById("roadProgress").style.width =
+  percentage + "%";
 
-    document.getElementById("progressBar").style.width =
-      percentage + "%";
+document.getElementById("walker").style.left =
+  percentage + "%";
 
   </script>
 
