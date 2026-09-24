@@ -1,0 +1,284 @@
+/* -------------------------
+   PAGE
+------------------------- */
+
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  background-color: #f5f5f5;
+  padding: 50px 20px;
+  margin: 0;
+}
+
+
+/* -------------------------
+   VERSE
+------------------------- */
+
+.verse {
+  max-width: 700px;
+  margin: 0 auto 35px auto;
+}
+
+.verse-text {
+  font-size: 24px;
+  font-style: italic;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.verse-reference {
+  margin-top: 8px;
+  font-size: 15px;
+}
+
+
+/* -------------------------
+   TITLE
+------------------------- */
+
+h1 {
+  font-size: 36px;
+  margin-bottom: 20px;
+}
+
+
+/* -------------------------
+   START / END DATES
+------------------------- */
+
+.dates {
+  margin-top: 20px;
+  font-size: 18px;
+  line-height: 1.7;
+}
+
+
+/* -------------------------
+   CURRENT DAY
+------------------------- */
+
+#day {
+  font-size: 28px;
+  font-weight: bold;
+  margin-top: 30px;
+}
+
+
+/* -------------------------
+   PERCENTAGE
+------------------------- */
+
+#percentage {
+  font-size: 22px;
+  margin-top: 15px;
+}
+
+
+/* -------------------------
+   ROAD CONTAINER
+------------------------- */
+
+.road-container {
+  width: 90%;
+  max-width: 800px;
+  margin: 60px auto 30px auto;
+}
+
+
+/* -------------------------
+   ROAD
+------------------------- */
+
+.road {
+  position: relative;
+
+  height: 50px;
+
+  background-color: #444;
+
+  border-radius: 10px;
+
+  overflow: visible;
+}
+
+
+/* White dashed center line */
+
+.road::after {
+  content: "";
+
+  position: absolute;
+
+  top: 23px;
+  left: 0;
+
+  width: 100%;
+  height: 4px;
+
+  z-index: 2;
+
+  background: repeating-linear-gradient(
+    to right,
+    white 0px,
+    white 30px,
+    transparent 30px,
+    transparent 55px
+  );
+}
+
+
+/* -------------------------
+   COMPLETED ROAD
+------------------------- */
+
+.road-progress {
+  position: absolute;
+
+  top: 0;
+  left: 0;
+
+  height: 100%;
+  width: 0%;
+
+  background-color: #4caf50;
+
+  border-radius: 10px 0 0 10px;
+
+  transition: width 1s ease;
+
+  z-index: 1;
+}
+
+
+/* -------------------------
+   WALKER
+------------------------- */
+
+.walker {
+  position: absolute;
+
+  top: -42px;
+  left: 0%;
+
+  font-size: 36px;
+
+  /*
+    translateX keeps the walker centered
+    over his exact percentage position.
+
+    scaleX(-1) flips him so he faces
+    toward the right/end of the road.
+  */
+
+  transform: translateX(-50%) scaleX(-1);
+
+  transition: left 1s ease;
+
+  z-index: 3;
+}
+
+
+/* -------------------------
+   CROSS
+------------------------- */
+
+.cross {
+  position: absolute;
+
+  right: -15px;
+  top: -58px;
+
+  font-size: 46px;
+  font-weight: bold;
+
+  z-index: 3;
+}
+
+
+/* -------------------------
+   ROAD LABELS
+------------------------- */
+
+.road-labels {
+  display: flex;
+
+  justify-content: space-between;
+
+  margin-top: 12px;
+
+  font-size: 14px;
+  font-weight: bold;
+}
+
+
+/* -------------------------
+   TRUST GOD
+------------------------- */
+
+.destination-message {
+  margin-top: 25px;
+
+  font-size: 24px;
+  font-weight: bold;
+}
+
+
+/* -------------------------
+   DAYS REMAINING
+------------------------- */
+
+#remaining {
+  font-size: 18px;
+  margin-top: 20px;
+}
+
+
+/* -------------------------
+   PHONE / SMALL SCREENS
+------------------------- */
+
+@media (max-width: 600px) {
+
+  body {
+    padding: 35px 15px;
+  }
+
+  .verse-text {
+    font-size: 20px;
+  }
+
+  h1 {
+    font-size: 30px;
+  }
+
+  .dates {
+    font-size: 16px;
+  }
+
+  #day {
+    font-size: 24px;
+  }
+
+  #percentage {
+    font-size: 20px;
+  }
+
+  .road-container {
+    width: 95%;
+    margin-top: 55px;
+  }
+
+  .walker {
+    font-size: 32px;
+  }
+
+  .cross {
+    font-size: 40px;
+  }
+
+  .destination-message {
+    font-size: 22px;
+  }
+
+}
