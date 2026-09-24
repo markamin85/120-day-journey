@@ -1,160 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>120 Day Journey</title>
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
-  <style>
+  <title>60 Day Journey</title>
 
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      background-color: #f5f5f5;
-      padding: 50px 20px;
-    }
+  <!-- Connect this page to style.css -->
+  <link
+    rel="stylesheet"
+    href="style.css"
+  >
 
-    h1 {
-      font-size: 36px;
-    }
-
-    .dates {
-      margin-top: 20px;
-      font-size: 18px;
-      line-height: 1.7;
-    }
-
-    #day {
-      font-size: 28px;
-      font-weight: bold;
-      margin-top: 30px;
-    }
-
-    #percentage {
-      font-size: 22px;
-      margin-top: 15px;
-    }
-
-    /* -------------------------
-       ROAD
-    ------------------------- */
-
-    .road-container {
-      width: 90%;
-      max-width: 800px;
-      margin: 60px auto 30px auto;
-    }
-
-    .road {
-      position: relative;
-      height: 50px;
-      background-color: #444;
-      border-radius: 10px;
-      overflow: visible;
-    }
-
-    /* White dashed center line */
-    .road::after {
-      content: "";
-      position: absolute;
-      top: 23px;
-      left: 0;
-
-      width: 100%;
-      height: 4px;
-
-      z-index: 2;
-
-      background: repeating-linear-gradient(
-        to right,
-        white 0px,
-        white 30px,
-        transparent 30px,
-        transparent 55px
-      );
-    }
-
-    /* Completed portion of road */
-    .road-progress {
-      position: absolute;
-      top: 0;
-      left: 0;
-
-      height: 100%;
-      width: 0%;
-
-      background-color: #4caf50;
-
-      border-radius: 10px 0 0 10px;
-
-      transition: width 1s ease;
-
-      z-index: 1;
-    }
-
-    /* Person moving along road */
-    .walker {
-      position: absolute;
-
-      top: -42px;
-      left: 0%;
-
-      font-size: 36px;
-
-      /* Centers walker and flips him toward the right */
-      transform: translateX(-50%) scaleX(-1);
-
-      transition: left 1s ease;
-
-      z-index: 3;
-    }
-
-    /* Cross at the destination */
-    .cross {
-      position: absolute;
-
-      right: -15px;
-      top: -58px;
-
-      font-size: 46px;
-      font-weight: bold;
-
-      z-index: 3;
-    }
-
-    .road-labels {
-      display: flex;
-      justify-content: space-between;
-
-      margin-top: 12px;
-
-      font-size: 14px;
-      font-weight: bold;
-    }
-
-    /* Message below road */
-    .destination-message {
-      margin-top: 25px;
-
-      font-size: 24px;
-      font-weight: bold;
-    }
-
-    #remaining {
-      font-size: 18px;
-      margin-top: 20px;
-    }
-
-  </style>
 </head>
+
 
 <body>
 
-  <h1>120 Day Journey</h1>
+
+  <!-- =========================
+       BIBLE VERSE
+  ========================== -->
+
+  <div class="verse">
+
+    <div class="verse-text">
+      “Without Me you can do nothing.”
+    </div>
+
+    <div class="verse-reference">
+      John 15:5
+    </div>
+
+  </div>
 
 
-  <!-- START AND END DATES -->
+
+  <!-- =========================
+       TITLE
+  ========================== -->
+
+  <h1>
+    60 Day Journey
+  </h1>
+
+
+
+  <!-- =========================
+       START AND END DATES
+  ========================== -->
+
   <div class="dates">
 
     <div id="startDate"></div>
@@ -164,347 +65,100 @@
   </div>
 
 
-  <!-- CURRENT DAY -->
+
+  <!-- =========================
+       CURRENT DAY
+  ========================== -->
+
   <div id="day"></div>
 
 
-  <!-- PERCENT COMPLETE -->
+
+  <!-- =========================
+       PERCENT COMPLETE
+  ========================== -->
+
   <div id="percentage"></div>
 
 
-  <!-- ROAD -->
+
+  <!-- =========================
+       ROAD
+  ========================== -->
+
   <div class="road-container">
+
 
     <div class="road">
 
-      <!-- Green completed road -->
+
+      <!-- Green completed portion -->
       <div
         class="road-progress"
         id="roadProgress">
       </div>
 
 
-      <!-- Walker -->
+      <!-- Moving person -->
       <div
         class="walker"
         id="walker">
-
         🚶
-
       </div>
 
 
       <!-- Cross at destination -->
       <div class="cross">
-
         ✝
-
       </div>
 
+
     </div>
 
 
-    <!-- Road labels -->
+
+    <!-- Start and finish labels -->
+
     <div class="road-labels">
 
-      <span>START</span>
+      <span>
+        START
+      </span>
 
-      <span>DAY 120</span>
+      <span id="finishLabel"></span>
 
     </div>
 
 
-    <!-- Message -->
+
+    <!-- Spiritual reminder -->
+
     <div class="destination-message">
-
       Trust God
-
     </div>
+
 
   </div>
 
 
-  <!-- DAYS REMAINING -->
+
+  <!-- =========================
+       DAYS REMAINING
+  ========================== -->
+
   <div id="remaining"></div>
 
 
 
-  <script>
+  <!-- =========================
+       JAVASCRIPT
+  ========================== -->
 
-    // -------------------------
-    // SETTINGS
-    // -------------------------
+  <!-- Connect this page to script.js -->
 
-    const TOTAL_DAYS = 120;
+  <script src="script.js"></script>
 
-    const START_YEAR = 2026;
-
-
-    // JavaScript months start at 0
-    //
-    // January = 0
-    // February = 1
-    // ...
-    // September = 8
-
-    const START_MONTH = 8;
-
-    const START_DAY = 22;
-
-
-
-    // -------------------------
-    // CREATE START DATE
-    // -------------------------
-
-    const startDate = new Date(
-      START_YEAR,
-      START_MONTH,
-      START_DAY
-    );
-
-
-
-    // -------------------------
-    // CALCULATE END DATE
-    // -------------------------
-
-    const endDate = new Date(startDate);
-
-
-    // Day 1 is September 20.
-    // Day 120 is 119 days after
-    // the starting date.
-
-    endDate.setDate(
-      endDate.getDate() + TOTAL_DAYS - 1
-    );
-
-
-
-    // -------------------------
-    // GET TODAY'S DATE
-    // -------------------------
-
-    const today = new Date();
-
-
-
-    // -------------------------
-    // CONVERT DATES TO UTC
-    // -------------------------
-
-    const startUTC = Date.UTC(
-
-      startDate.getFullYear(),
-
-      startDate.getMonth(),
-
-      startDate.getDate()
-
-    );
-
-
-    const todayUTC = Date.UTC(
-
-      today.getFullYear(),
-
-      today.getMonth(),
-
-      today.getDate()
-
-    );
-
-
-
-    // -------------------------
-    // CALCULATE DAYS
-    // -------------------------
-
-    const millisecondsPerDay =
-      1000 * 60 * 60 * 24;
-
-
-
-    let daysElapsed = Math.floor(
-
-      (todayUTC - startUTC) /
-
-      millisecondsPerDay
-
-    );
-
-
-
-    // Prevent negative numbers
-    if (daysElapsed < 0) {
-
-      daysElapsed = 0;
-
-    }
-
-
-
-    // Prevent going past 120 days
-    if (daysElapsed > TOTAL_DAYS) {
-
-      daysElapsed = TOTAL_DAYS;
-
-    }
-
-
-
-    // Current day of journey
-    const currentDay = Math.min(
-
-      daysElapsed + 1,
-
-      TOTAL_DAYS
-
-    );
-
-
-
-    // Percentage completed
-    const percentage =
-
-      (daysElapsed / TOTAL_DAYS) * 100;
-
-
-
-    // Days remaining
-    const daysRemaining =
-
-      TOTAL_DAYS - daysElapsed;
-
-
-
-    // -------------------------
-    // FORMAT DATES
-    // -------------------------
-
-    const dateOptions = {
-
-      month: "long",
-
-      day: "numeric",
-
-      year: "numeric"
-
-    };
-
-
-
-    // -------------------------
-    // DISPLAY START DATE
-    // -------------------------
-
-    document.getElementById(
-      "startDate"
-    ).textContent =
-
-      "Start: " +
-
-      startDate.toLocaleDateString(
-
-        "en-US",
-
-        dateOptions
-
-      );
-
-
-
-    // -------------------------
-    // DISPLAY END DATE
-    // -------------------------
-
-    document.getElementById(
-      "endDate"
-    ).textContent =
-
-      "Day 120: " +
-
-      endDate.toLocaleDateString(
-
-        "en-US",
-
-        dateOptions
-
-      );
-
-
-
-    // -------------------------
-    // DISPLAY CURRENT DAY
-    // -------------------------
-
-    document.getElementById(
-      "day"
-    ).textContent =
-
-      "Day " +
-
-      currentDay +
-
-      " of " +
-
-      TOTAL_DAYS;
-
-
-
-    // -------------------------
-    // DISPLAY PERCENTAGE
-    // -------------------------
-
-    document.getElementById(
-      "percentage"
-    ).textContent =
-
-      percentage.toFixed(1) +
-
-      "% Complete";
-
-
-
-    // -------------------------
-    // DISPLAY DAYS REMAINING
-    // -------------------------
-
-    document.getElementById(
-      "remaining"
-    ).textContent =
-
-      daysRemaining +
-
-      " Days Remaining";
-
-
-
-    // -------------------------
-    // UPDATE ROAD
-    // -------------------------
-
-    document.getElementById(
-      "roadProgress"
-    ).style.width =
-
-      percentage + "%";
-
-
-
-    // -------------------------
-    // MOVE WALKER
-    // -------------------------
-
-    document.getElementById(
-      "walker"
-    ).style.left =
-
-      percentage + "%";
-
-
-  </script>
 
 </body>
+
 </html>
