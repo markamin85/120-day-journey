@@ -1,3 +1,31 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+
+import {
+  getFirestore
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+
+// -------------------------
+// FIREBASE CONFIGURATION
+// -------------------------
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDTRC9byQ7TlfPXt0B_JwAxrJe8KcS3yXM",
+  authDomain: "day-journey-5d91e.firebaseapp.com",
+  projectId: "day-journey-5d91e",
+  storageBucket: "day-journey-5d91e.firebasestorage.app",
+  messagingSenderId: "159472568464",
+  appId: "1:159472568464:web:7a7e227275bdc5e7faf015"
+};
+
+
+// -------------------------
+// INITIALIZE FIREBASE
+// -------------------------
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
 // -------------------------
 // SETTINGS
 // -------------------------
