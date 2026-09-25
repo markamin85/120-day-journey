@@ -292,3 +292,101 @@ onAuthStateChanged(auth, (user) => {
   }
 
 });
+
+
+// -------------------------
+// DAILY CHECKLIST
+// -------------------------
+
+const checklistItems = [
+  "morningTeeth",
+  "morningExercise",
+  "morningPrayer",
+  "morningJournal",
+  "screensCar",
+  "nightTeeth",
+  "nightExercise",
+  "nightPrayer",
+  "nightJournal"
+];
+
+
+// Show today's date above checklist
+document.getElementById("checklistDate").textContent =
+  today.toLocaleDateString(
+    "en-US",
+    dateOptions
+  );
+
+
+// -------------------------
+// UPDATE DAILY PROGRESS
+// -------------------------
+
+function updateDailyProgress() {
+
+  let completed = 0;
+
+  checklistItems.forEach((itemId) => {
+
+    const checkbox =
+      document.getElementById(itemId);
+
+    if (checkbox.checked) {
+      completed++;
+    }
+
+  });
+
+
+  const total =
+    checklistItems.length;
+
+
+  const dailyPercent =
+    (completed / total) * 100;
+
+
+  document.getElementById(
+    "dailyProgressText"
+  ).textContent =
+    completed +
+    " of " +
+    total +
+    " completed";
+
+
+  document.getElementById(
+    "dailyPercentage"
+  ).textContent =
+    dailyPercent.toFixed(1) +
+    "%";
+
+
+  document.getElementById(
+    "dailyProgressBar"
+  ).style.width =
+    dailyPercent + "%";
+
+}
+
+
+// -------------------------
+// LISTEN FOR CHECKBOX CHANGES
+// -------------------------
+
+checklistItems.forEach((itemId) => {
+
+  const checkbox =
+    document.getElementById(itemId);
+
+  checkbox.addEventListener(
+    "change",
+    updateDailyProgress
+  );
+
+});
+
+
+// Set initial progress
+updateDailyProgress();
