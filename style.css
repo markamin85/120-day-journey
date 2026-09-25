@@ -258,6 +258,84 @@ h1 {
   font-size: 14px;
 }
 
+/* -------------------------
+   DAILY CHECKLIST
+------------------------- */
+
+.checklist-section {
+  width: 90%;
+  max-width: 700px;
+  margin: 60px auto 0 auto;
+  text-align: left;
+}
+
+.checklist-section h2 {
+  text-align: center;
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+
+#checklistDate {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 16px;
+}
+
+.checklist-group {
+  background-color: white;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+.checklist-group h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+}
+
+.checklist-group label {
+  display: block;
+  padding: 10px 0;
+  font-size: 17px;
+  cursor: pointer;
+}
+
+.checklist-group input[type="checkbox"] {
+  margin-right: 10px;
+  transform: scale(1.25);
+}
+
+.daily-progress {
+  margin-top: 30px;
+  text-align: center;
+}
+
+#dailyProgressText {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.daily-progress-container {
+  width: 100%;
+  height: 24px;
+  background-color: #ddd;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.daily-progress-bar {
+  height: 100%;
+  width: 0%;
+  background-color: #4caf50;
+  transition: width 0.3s ease;
+}
+
+#dailyPercentage {
+  margin-top: 10px;
+  font-size: 22px;
+  font-weight: bold;
+}
+
 @media (max-width: 600px) {
 
   body {
