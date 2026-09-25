@@ -4,6 +4,12 @@ import {
   getFirestore
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
+import {
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 
 // -------------------------
 // FIREBASE CONFIGURATION
@@ -26,6 +32,10 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 const db = getFirestore(app);
+
+const auth = getAuth(app);
+
+const provider = new GoogleAuthProvider();
 // -------------------------
 // SETTINGS
 // -------------------------
