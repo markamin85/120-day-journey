@@ -234,3 +234,61 @@ document.getElementById("roadProgress").style.width =
 
 document.getElementById("walker").style.left =
   percentage + "%";
+
+// -------------------------
+// GOOGLE SIGN-IN BUTTON
+// -------------------------
+
+const signInButton =
+  document.getElementById("signInButton");
+
+const userStatus =
+  document.getElementById("userStatus");
+
+
+signInButton.addEventListener("click", async () => {
+
+  try {
+
+    await signInWithPopup(
+      auth,
+      provider
+    );
+
+  } catch (error) {
+
+    console.error(
+      "Sign-in error:",
+      error
+    );
+
+  }
+
+});
+
+
+// -------------------------
+// CHECK SIGN-IN STATUS
+// -------------------------
+
+onAuthStateChanged(auth, (user) => {
+
+  if (user) {
+
+    signInButton.style.display =
+      "none";
+
+    userStatus.textContent =
+      "Signed in as " + user.email;
+
+  } else {
+
+    signInButton.style.display =
+      "inline-block";
+
+    userStatus.textContent =
+      "Not signed in";
+
+  }
+
+});
