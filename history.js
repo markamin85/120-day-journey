@@ -27,7 +27,7 @@ import {
 
 const firebaseConfig = {
 
-  apiKey: "PUT THE SAME API KEY FROM script.js HERE",
+  apiKey: "AIzaSyDTRC9byQ7TlfPXt0B_JwAxrJe8KcS3yXM",
 
   authDomain: "day-journey-5d91e.firebaseapp.com",
 
