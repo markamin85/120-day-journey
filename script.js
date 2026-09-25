@@ -1,7 +1,11 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 
 import {
-  getFirestore
+  getFirestore,
+  doc,
+  getDoc,
+  setDoc,
+  serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
 import {
@@ -375,17 +379,238 @@ function updateDailyProgress() {
 // LISTEN FOR CHECKBOX CHANGES
 // -------------------------
 
+updateDailyProgress();
+
+// -------------------------
+// FIRESTORE CHECKLIST SAVE
+// -------------------------
+
+function getTodayKey() {
+
+  const year =
+    today.getFullYear();
+
+  const month =
+    String(today.getMonth() + 1)
+      .padStart(2, "0");
+
+  const day =
+    String(today.getDate())
+      .padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}
+
+
+const todayKey =
+  getTodayKey();
+
+
+// -------------------------
+// SAVE TODAY'S CHECKLIST
+// -------------------------
+
+async function saveTodayChecklist() {
+
+  const user =
+    auth.currentUser;
+
+  // Do not save unless signed in
+  if (!user) {
+    return;
+  }
+
+
+  const checklistData = {};
+
+  let completed = 0;
+
+
+  checklistItems.forEach((itemId) => {
+
+    const checked =
+      document.getElementById(itemId).checked;
+
+    checklistData[itemId] =
+      checked;
+
+    if (checked) {
+      completed++;
+    }
+
+  });
+
+
+  const total =
+    checklistItems.length;
+
+  const dailyPercent =
+    (completed / total) * 100;
+
+
+  const logReference =
+    doc(
+      db,
+      "users",
+      user.uid,
+      "dailyLogs",
+      todayKey
+    );
+
+
+  await setDoc(
+    logReference,
+    {
+      date: todayKey,
+
+      checklist: checklistData,
+
+      completed: completed,
+
+      total: total,
+
+      percentage: dailyPercent,
+
+      updatedAt: serverTimestamp()
+    },
+    {
+      merge: true
+    }
+  );
+
+}
+
+
+// -------------------------
+// LOAD TODAY'S CHECKLIST
+// -------------------------
+
+async function loadTodayChecklist() {
+
+  const user =
+    auth.currentUser;
+
+  if (!user) {
+    return;
+  }
+
+
+  const logReference =
+    doc(
+      db,
+      "users",
+      user.uid,
+      "dailyLogs",
+      todayKey
+    );
+
+
+  const snapshot =
+    await getDoc(logReference);
+
+
+  if (snapshot.exists()) {
+
+    const data =
+      snapshot.data();
+
+
+    if (data.checklist) {
+
+      checklistItems.forEach((itemId) => {
+
+        document.getElementById(
+          itemId
+        ).checked =
+          data.checklist[itemId] || false;
+
+      });
+
+    }
+
+  } else {
+
+    // No record for today means
+    // start with a fresh checklist.
+
+    checklistItems.forEach((itemId) => {
+
+      document.getElementById(
+        itemId
+      ).checked = false;
+
+    });
+
+  }
+
+
+  updateDailyProgress();
+
+}
+
+
+// -------------------------
+// SAVE WHEN CHECKBOX CHANGES
+// -------------------------
+
 checklistItems.forEach((itemId) => {
 
   const checkbox =
     document.getElementById(itemId);
 
+
   checkbox.addEventListener(
     "change",
-    updateDailyProgress
+    async () => {
+
+      updateDailyProgress();
+
+      try {
+
+        await saveTodayChecklist();
+
+      } catch (error) {
+
+        console.error(
+          "Checklist save error:",
+          error
+        );
+
+      }
+
+    }
   );
 
 });
+
+
+// -------------------------
+// LOAD CHECKLIST AFTER LOGIN
+// -------------------------
+
+onAuthStateChanged(
+  auth,
+  async (user) => {
+
+    if (user) {
+
+      try {
+
+        await loadTodayChecklist();
+
+      } catch (error) {
+
+        console.error(
+          "Checklist load error:",
+          error
+        );
+
+      }
+
+    }
+
+  }
+);
 
 
 // Set initial progress
