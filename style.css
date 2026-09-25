@@ -237,6 +237,26 @@ h1 {
 /* -------------------------
    PHONE / SMALL SCREENS
 ------------------------- */
+/* -------------------------
+   GOOGLE SIGN-IN
+------------------------- */
+
+.auth-section {
+  margin: 20px 0 30px 0;
+}
+
+#signInButton {
+  padding: 10px 18px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+#userStatus {
+  margin-top: 10px;
+  font-size: 14px;
+}
 
 @media (max-width: 600px) {
 
