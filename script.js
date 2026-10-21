@@ -53,9 +53,9 @@ const START_YEAR = 2026;
 // February = 1
 // ...
 // September = 8
-const START_MONTH = 8;
+const START_MONTH = 9;
 
-const START_DAY = 25;
+const START_DAY = 11;
 
 
 // -------------------------
