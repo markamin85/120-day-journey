@@ -307,6 +307,9 @@ const checklistItems = [
   "morningExercise",
   "morningPrayer",
   "morningJournal",
+
+  "life20Minutes",
+
   "screensCar",
   "nightTeeth",
   "nightExercise",
