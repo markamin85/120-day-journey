@@ -463,3 +463,100 @@ h1 {
 }
    
 }
+
+
+/* -------------------------
+   PORN-FREE STREAK TRACKER
+------------------------- */
+
+.streak-section {
+  width: 90%;
+  max-width: 500px;
+  margin: 45px auto 0 auto;
+  padding: 30px 20px;
+
+  background-color: white;
+  border-radius: 12px;
+
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.streak-section h2 {
+  font-size: 26px;
+  margin: 0 0 20px 0;
+}
+
+/* Current streak day */
+
+.streak-count {
+  font-size: 48px;
+  font-weight: bold;
+  color: #4caf50;
+  margin-bottom: 15px;
+}
+
+/* Streak start date */
+
+.streak-start {
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 15px;
+}
+
+/* Sign-in and Firebase status */
+
+.streak-status {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+/* Reset streak button */
+
+#resetStreakButton {
+  padding: 12px 24px;
+
+  font-size: 16px;
+  font-weight: bold;
+
+  color: white;
+  background-color: #c0392b;
+
+  border: none;
+  border-radius: 8px;
+
+  cursor: pointer;
+
+  transition: background-color 0.2s ease;
+}
+
+#resetStreakButton:hover:not(:disabled) {
+  background-color: #a93226;
+}
+
+#resetStreakButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* -------------------------
+   STREAK TRACKER - MOBILE
+------------------------- */
+
+@media (max-width: 600px) {
+
+  .streak-section {
+    width: 95%;
+    padding: 25px 15px;
+  }
+
+  .streak-section h2 {
+    font-size: 23px;
+  }
+
+  .streak-count {
+    font-size: 40px;
+  }
+
+}
