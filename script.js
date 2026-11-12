@@ -5,7 +5,10 @@ import {
   doc,
   getDoc,
   setDoc,
-  serverTimestamp
+  serverTimestamp,
+  collection,
+  onSnapshot,
+  runTransaction
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
 import {
@@ -618,3 +621,416 @@ onAuthStateChanged(
 
 // Set initial progress
 updateDailyProgress();
+
+
+/* -------------------------
+   PORN-FREE STREAK TRACKER
+------------------------- */
+
+const streakCount =
+  document.getElementById("streakCount");
+
+const streakStartDate =
+  document.getElementById("streakStartDate");
+
+const streakStatus =
+  document.getElementById("streakStatus");
+
+const resetStreakButton =
+  document.getElementById("resetStreakButton");
+
+let streakStartKey = null;
+let streakUserId = null;
+let unsubscribeStreak = null;
+let creatingStreak = false;
+let resettingStreak = false;
+
+
+// -------------------------
+// CURRENT LOCAL DATE
+// -------------------------
+
+function getStreakTodayKey() {
+  const now = new Date();
+
+  const year = now.getFullYear();
+
+  const month = String(
+    now.getMonth() + 1
+  ).padStart(2, "0");
+
+  const day = String(
+    now.getDate()
+  ).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}
+
+
+// -------------------------
+// CALCULATE STREAK DAYS
+// -------------------------
+
+function calculateStreakDays(
+  startKey,
+  endKey = getStreakTodayKey()
+) {
+  const [sy, sm, sd] =
+    startKey.split("-").map(Number);
+
+  const [ey, em, ed] =
+    endKey.split("-").map(Number);
+
+  const startUTC = Date.UTC(sy, sm - 1, sd);
+  const endUTC = Date.UTC(ey, em - 1, ed);
+
+  const difference =
+    Math.round(
+      (endUTC - startUTC) / 86400000
+    );
+
+  return Math.max(1, difference + 1);
+}
+
+
+// -------------------------
+// UPDATE STREAK DISPLAY
+// -------------------------
+
+function updateStreakDisplay() {
+  if (!streakStartKey) {
+    streakCount.textContent = "—";
+    streakStartDate.textContent = "Start Date: —";
+    return;
+  }
+
+  const [year, month, day] =
+    streakStartKey.split("-").map(Number);
+
+  const displayDate =
+    new Date(year, month - 1, day);
+
+  const days =
+    calculateStreakDays(streakStartKey);
+
+  streakCount.textContent =
+    "Day " + days;
+
+  streakStartDate.textContent =
+    "Start Date: " +
+    displayDate.toLocaleDateString(
+      "en-US",
+      dateOptions
+    );
+}
+
+
+// -------------------------
+// LOAD AND SYNC STREAK
+// -------------------------
+
+onAuthStateChanged(auth, (user) => {
+
+  // Stop listening to the previous account.
+  if (unsubscribeStreak) {
+    unsubscribeStreak();
+    unsubscribeStreak = null;
+  }
+
+  streakUserId = user ? user.uid : null;
+  streakStartKey = null;
+  creatingStreak = false;
+
+  updateStreakDisplay();
+  resetStreakButton.disabled = true;
+
+  if (!user) {
+    streakStatus.textContent =
+      "Sign in to view your streak.";
+    return;
+  }
+
+  streakStatus.textContent =
+    "Loading streak...";
+
+  const streakRef = doc(
+    db,
+    "users",
+    user.uid,
+    "streak",
+    "current"
+  );
+
+  unsubscribeStreak = onSnapshot(
+    streakRef,
+
+    async (snapshot) => {
+
+      if (streakUserId !== user.uid) {
+        return;
+      }
+
+      // First time using the streak tracker:
+      // automatically begin on today's date.
+      if (!snapshot.exists()) {
+
+        if (creatingStreak) {
+          return;
+        }
+
+        creatingStreak = true;
+
+        streakStatus.textContent =
+          "Starting your streak...";
+
+        try {
+
+          await runTransaction(
+            db,
+            async (transaction) => {
+
+              const current =
+                await transaction.get(streakRef);
+
+              // Don't overwrite a streak created
+              // simultaneously on another device.
+              if (!current.exists()) {
+
+                transaction.set(streakRef, {
+                  startDate: getStreakTodayKey(),
+                  createdAt: serverTimestamp(),
+                  updatedAt: serverTimestamp()
+                });
+
+              }
+
+            }
+          );
+
+        } catch (error) {
+
+          console.error(
+            "Streak initialization error:",
+            error
+          );
+
+          if (streakUserId === user.uid) {
+            streakStatus.textContent =
+              "Could not start streak. Check Firebase access.";
+          }
+
+        } finally {
+          creatingStreak = false;
+        }
+
+        return;
+      }
+
+      const savedDate =
+        snapshot.data().startDate;
+
+      if (
+        typeof savedDate !== "string" ||
+        !/^\d{4}-\d{2}-\d{2}$/.test(savedDate)
+      ) {
+        streakStatus.textContent =
+          "Invalid streak start date.";
+        resetStreakButton.disabled = true;
+        return;
+      }
+
+      streakStartKey = savedDate;
+
+      updateStreakDisplay();
+
+      resetStreakButton.disabled =
+        resettingStreak;
+
+      if (!resettingStreak) {
+        streakStatus.textContent =
+          snapshot.metadata.fromCache
+            ? "Showing cached streak data."
+            : "Streak synchronized.";
+      }
+
+    },
+
+    (error) => {
+
+      console.error(
+        "Streak synchronization error:",
+        error
+      );
+
+      if (streakUserId === user.uid) {
+        streakStatus.textContent =
+          "Unable to synchronize streak.";
+
+        resetStreakButton.disabled = true;
+      }
+
+    }
+  );
+
+});
+
+
+// -------------------------
+// RESET STREAK
+// -------------------------
+
+resetStreakButton.addEventListener(
+  "click",
+  async () => {
+
+    const user = auth.currentUser;
+
+    if (
+      !user ||
+      !streakStartKey ||
+      resettingStreak
+    ) {
+      return;
+    }
+
+    const currentDays =
+      calculateStreakDays(streakStartKey);
+
+    // Require confirmation before resetting.
+    const confirmed = window.confirm(
+      `Reset your current streak (Day ${currentDays})?\n\n` +
+      "Your previous streak will be saved to history.\n" +
+      "A new streak will begin at Day 1."
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    resettingStreak = true;
+    resetStreakButton.disabled = true;
+
+    streakStatus.textContent =
+      "Saving previous streak...";
+
+    const streakRef = doc(
+      db,
+      "users",
+      user.uid,
+      "streak",
+      "current"
+    );
+
+    // Generate a unique history ID.
+    const historyRef = doc(
+      collection(
+        db,
+        "users",
+        user.uid,
+        "streakHistory"
+      )
+    );
+
+    try {
+
+      await runTransaction(
+        db,
+        async (transaction) => {
+
+          const snapshot =
+            await transaction.get(streakRef);
+
+          if (!snapshot.exists()) {
+            throw new Error(
+              "No existing streak found."
+            );
+          }
+
+          const previousStart =
+            snapshot.data().startDate;
+
+          if (
+            typeof previousStart !== "string" ||
+            !/^\d{4}-\d{2}-\d{2}$/.test(previousStart)
+          ) {
+            throw new Error(
+              "Invalid previous streak date."
+            );
+          }
+
+          const resetDate =
+            getStreakTodayKey();
+
+          const daysReached =
+            calculateStreakDays(
+              previousStart,
+              resetDate
+            );
+
+          // Save the old streak permanently.
+          transaction.set(historyRef, {
+            startDate: previousStart,
+            endDate: resetDate,
+            daysReached: daysReached,
+            resetAt: serverTimestamp()
+          });
+
+          // Begin a new streak today.
+          transaction.set(
+            streakRef,
+            {
+              startDate: resetDate,
+              updatedAt: serverTimestamp()
+            },
+            {
+              merge: true
+            }
+          );
+
+        }
+      );
+
+      if (streakUserId === user.uid) {
+        streakStatus.textContent =
+          "Streak reset. Previous streak saved!";
+      }
+
+    } catch (error) {
+
+      console.error(
+        "Streak reset error:",
+        error
+      );
+
+      if (streakUserId === user.uid) {
+        streakStatus.textContent =
+          "Reset failed. Previous streak preserved.";
+      }
+
+    } finally {
+
+      resettingStreak = false;
+
+      if (streakUserId === user.uid) {
+        resetStreakButton.disabled =
+          !streakStartKey;
+      }
+
+    }
+
+  }
+);
+
+
+// -------------------------
+// REFRESH STREAK DAY
+// -------------------------
+
+// Keep the displayed day current if
+// the website stays open past midnight.
+
+setInterval(
+  updateStreakDisplay,
+  60000
+);
+
